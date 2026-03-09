@@ -8,3 +8,5 @@ typedef struct {
     void** data;
     const FieldInfo* info;
 } DynamicArray;
+
+DynamicArray* array_initialize(size_t capacity, const FieldInfo* info);
