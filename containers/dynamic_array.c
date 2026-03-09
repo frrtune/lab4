@@ -16,3 +16,19 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
     arr->info = info;
     return arr;
 }
+
+void array_remove_by_index(DynamicArray* arr, size_t index) {
+    if (arr == NULL) return;
+    if (index >= arr->size)
+    {
+        //дописать вывод ошибки
+        return;
+    }
+    arr->info->destroy(arr->data[index]);
+    for (size_t i = index; i < (arr->size - 1); i++)
+    {
+        arr->data[i] = arr->data[i + 1];
+    }
+    arr->data[arr->size-1] = NULL;
+    arr->size--;
+}
