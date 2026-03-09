@@ -32,3 +32,12 @@ void array_remove_by_index(DynamicArray* arr, size_t index) {
     arr->data[arr->size-1] = NULL;
     arr->size--;
 }
+
+void array_destroy(DynamicArray* arr) {
+    if (arr == NULL) return;
+    while (arr->size > 0) {
+        array_remove_by_index(arr, arr->size-1);
+    }
+    free(arr->data);
+    free(arr);
+}
