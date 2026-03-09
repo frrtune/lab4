@@ -10,3 +10,4 @@ typedef struct {
 } DynamicArray;
 
 DynamicArray* array_initialize(size_t capacity, const FieldInfo* info);
+void array_remove_by_index(DynamicArray* arr, size_t index);
