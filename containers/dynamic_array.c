@@ -53,3 +53,18 @@ void array_push_back(DynamicArray* arr, void* elem) {
     arr->data[arr->size] = elem;
     arr->size++;
 }
+
+void array_insert(DynamicArray* arr, void* elem, size_t index) {
+    if (arr == NULL || elem == NULL || index > arr->size) return;
+    if (arr->size == arr->capacity) {
+        void** new_data = realloc(arr->data, 2 * arr->capacity * sizeof(void*));
+        if (new_data == NULL) return;
+        arr->data = new_data;
+        arr->capacity = 2 * arr->capacity;
+    }
+    for (size_t i = arr->size; i > index; i--) {
+        arr->data[i] = arr->data[i-1];
+    }
+    arr->data[index] = elem;
+    arr->size++;
+}
