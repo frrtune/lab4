@@ -41,3 +41,15 @@ void array_destroy(DynamicArray* arr) {
     free(arr->data);
     free(arr);
 }
+
+void array_push_back(DynamicArray* arr, void* elem) {
+    if (arr == NULL || elem == NULL) return;
+    if (arr->size == arr->capacity) {
+        void** new_data = realloc(arr->data, 2 * arr->capacity * sizeof(void*));
+        if (new_data == NULL) return;
+        arr->data = new_data;
+        arr->capacity = 2 * arr->capacity;
+    }
+    arr->data[arr->size] = elem;
+    arr->size++;
+}
