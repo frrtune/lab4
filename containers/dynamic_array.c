@@ -68,3 +68,8 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
     arr->data[index] = elem;
     arr->size++;
 }
+
+const void* array_get(const DynamicArray* arr, size_t index) {
+    if (arr == NULL || index > arr->size) return;
+    return arr->data[index];
+}
