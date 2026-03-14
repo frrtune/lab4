@@ -98,3 +98,16 @@ DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*))
     }
     return new_arr;
 }
+
+DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2) {
+    if (arr1 == NULL || arr2 == NULL || arr1->info != arr2->info) return NULL;
+    DynamicArray* new_arr = array_initialize(arr1->size + arr2->size, arr1->info);
+    if (new_arr == NULL) return NULL;
+    for (size_t i = 0; i < arr1->size; i++) {
+        array_push_back(new_arr, arr1->data[i]);
+    }
+    for (size_t i = 0; i < arr2->size; i++) {
+        array_push_back(new_arr, arr2->data[i]);
+    }
+    return new_arr;
+}

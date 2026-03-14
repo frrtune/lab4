@@ -16,3 +16,5 @@ void array_push_back(DynamicArray* arr, void* elem);
 void array_insert(DynamicArray* arr, void* elem, size_t index);
 const void* array_get(const DynamicArray* arr, size_t index);
 DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*));
+DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*));
+DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2);
