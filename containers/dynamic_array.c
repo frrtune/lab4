@@ -49,7 +49,7 @@ void array_push_back(DynamicArray* arr, void* elem) {
         if (new_data == NULL) return;
         arr->data = new_data;
         arr->capacity = 2 * arr->capacity;
-    }
+    }       
     arr->data[arr->size] = elem;
     arr->size++;
 }
@@ -72,4 +72,19 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
 const void* array_get(const DynamicArray* arr, size_t index) {
     if (arr == NULL || index >= arr->size) return;
     return arr->data[index];
+}
+
+DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*)) {
+    if (arr == NULL || function == NULL) return NULL;
+    DynamicArray* new_arr = array_initialize(arr->size, arr->info);
+    if (new_arr == NULL) return NULL;
+    for (size_t i = 0; i < arr->size; i++) {
+        void* new_elem = function(arr->data[i]);
+        if (new_elem == NULL) {
+            array_destroy(new_arr);
+            return NULL;
+        }
+        array_push_back(new_arr, new_elem);
+    }
+    return new_arr;
 }
