@@ -92,9 +92,12 @@ DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*))
 DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*)) {
     if (arr == NULL || function == NULL) return NULL;
     DynamicArray* new_arr = array_initialize(arr->size, arr->info);
+    if (new_arr == NULL) return NULL;
     for (size_t i = 0; i < arr->size; i++) {
-        int result = function(arr->data[i]);
-        if (result) array_push_back(new_arr, arr->data[i]);
+        if (function(arr->data[i])) {
+            void* copied_elem = arr->info->clone(arr->data[i]);
+            array_push_back(new_arr, copied_elem);
+        }
     }
     return new_arr;
 }
