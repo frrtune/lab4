@@ -10,6 +10,8 @@ const FieldInfo* GetComplexFieldInfo() {
         complex_info->size = sizeof(Complex);
         complex_info->clone = ComplexClone;
         complex_info->destroy = ComplexDestroy;
+        complex_info->scan = ComplexScan;
+        complex_info->print = ComplexPrint;
     }
     return complex_info;
 }

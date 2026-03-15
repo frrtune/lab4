@@ -107,10 +107,12 @@ DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2) {
     DynamicArray* new_arr = array_initialize(arr1->size + arr2->size, arr1->info);
     if (new_arr == NULL) return NULL;
     for (size_t i = 0; i < arr1->size; i++) {
-        array_push_back(new_arr, arr1->data[i]);
+        void* copied_elem = arr1->info->clone(arr1->data[i]);
+        array_push_back(new_arr, copied_elem);
     }
     for (size_t i = 0; i < arr2->size; i++) {
-        array_push_back(new_arr, arr2->data[i]);
+        void* copied_elem = arr2->info->clone(arr2->data[i]);
+        array_push_back(new_arr, copied_elem);
     }
     return new_arr;
 }

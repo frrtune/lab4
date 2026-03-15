@@ -6,5 +6,5 @@ typedef struct {
     void* (*clone)(const void*);
     void (*destroy)(void*);
     void (*print)(const void*);
-    void* (*scan)(void);
+    void (*scan)(void*);
 } FieldInfo;
