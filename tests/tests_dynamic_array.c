@@ -28,8 +28,26 @@ void test_array_push_back() {
     puts("SUCCESS");
 }
 
+void test_array_remove_by_index() {
+    DynamicArray* arr = array_initialize(3, GetIntFieldInfo());
+    int* elem1 = malloc(sizeof(int));
+    int* elem2 = malloc(sizeof(int));
+    int* elem3 = malloc(sizeof(int));
+    *elem1 = 1, *elem2 = 2, *elem3 = 3;
+    array_push_back(arr, elem1);
+    array_push_back(arr, elem2);
+    array_push_back(arr, elem3);
+    array_remove_by_index(arr, 1);
+    assert(arr->size == 2);
+    assert(*(int*)arr->data[0] == 1);
+    assert(*(int*)arr->data[1] == 3);
+    array_destroy(arr);
+    puts("SUCCESS");
+}
+
 int main() {
     test_array_initialize();
     test_array_push_back();
+    test_array_remove_by_index();
     return 0;
 }
