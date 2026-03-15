@@ -14,7 +14,7 @@ const FieldInfo* GetComplexFieldInfo() {
     return complex_info;
 }
 
-static void* ComplexClone(const void* current_complex) {
+void* ComplexClone(const void* current_complex) {
     if (!current_complex) return NULL;
     const Complex* current_complex_c = (const Complex*) current_complex;
     Complex* new_complex = (Complex*)malloc(sizeof(Complex));
@@ -24,11 +24,11 @@ static void* ComplexClone(const void* current_complex) {
     return new_complex;
 }
 
-static void ComplexDestroy(void* current_complex) {
+void ComplexDestroy(void* current_complex) {
     free(current_complex);
 }
 
-static void ComplexPrint(const void* current_complex) {
+void ComplexPrint(const void* current_complex) {
     if (!current_complex) {
         puts("NULL");
         return;
@@ -41,7 +41,7 @@ static void ComplexPrint(const void* current_complex) {
     printf("%lf+%lf*i", current_complex_c->Re, current_complex_c->Im);
 }
 
-static void ComplexScan(void* current_complex) {
+void ComplexScan(void* current_complex) {
     if (!current_complex) {
         puts("NULL");
         return;

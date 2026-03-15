@@ -7,7 +7,7 @@ typedef struct {
     double Im;
 } Complex;
 const FieldInfo* GetComplexFieldInfo();
-static void* ComplexClone(const void* current_complex);
-static void ComplexDestroy(void* current_complex);
-static void ComplexPrint(const void* current_complex);
-static void ComplexScan(void* current_complex);
+void* ComplexClone(const void* current_complex);
+void ComplexDestroy(void* current_complex);
+void ComplexPrint(const void* current_complex);
+void ComplexScan(void* current_complex);
