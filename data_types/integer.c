@@ -1,5 +1,6 @@
 #include "integer.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 const FieldInfo* GetIntFieldInfo() {
     static FieldInfo* int_info = NULL;
