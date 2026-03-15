@@ -15,7 +15,7 @@ const FieldInfo* GetIntFieldInfo() {
     return int_info;
 }
 
-static void* IntClone(const void* current_int) {
+void* IntClone(const void* current_int) {
     if (!current_int) return NULL;
     int* new_int = (int*)malloc(sizeof(int));
     if (!new_int) return NULL;
@@ -23,11 +23,11 @@ static void* IntClone(const void* current_int) {
     return new_int;
 }
 
-static void IntDestroy(void* current_int) {
+void IntDestroy(void* current_int) {
     free(current_int);
 }
 
-static void IntPrint(const void* current_int) {
+void IntPrint(const void* current_int) {
     if (!current_int) {
         puts("NULL");
         return;
@@ -35,7 +35,7 @@ static void IntPrint(const void* current_int) {
     printf("%d", *(const int*)current_int);
 }
 
-static void IntScan(void* current_int) {
+void IntScan(void* current_int) {
     if (!current_int) {
         puts("NULL");
         return;
