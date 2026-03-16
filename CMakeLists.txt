@@ -6,7 +6,6 @@ find_library(PDCURSES_LIB NAMES pdcurses libpdcurses PATHS "C:/msys64/mingw64/li
 find_path(PDCURSES_INCLUDE NAMES curses.h pdcurses.h PATHS "C:/msys64/mingw64/include" "C:/msys64/mingw64/include/pdcurses")
 
 add_subdirectory(containers)
-add_subdirectory(core)
 add_subdirectory(data_types)
 add_subdirectory(ui)
 
@@ -16,7 +15,6 @@ add_executable(lab4
 
 target_link_libraries(lab4
     containers
-    core
     data_types  
     ui
     ${PDCURSES_LIB}
