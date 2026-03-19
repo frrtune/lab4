@@ -28,12 +28,14 @@ void IntDestroy(void* current_int) {
     free(current_int);
 }
 
-void IntPrint(const void* current_int) {
+char* IntPrint(const void* current_int) {
     if (!current_int) {
-        puts("NULL");
-        return;
+        return NULL;
     }
-    printf("%d", *(const int*)current_int);
+    char* str = malloc(15);
+    if (!str) return NULL;
+    sprintf(str, "%d", *(const int*)current_int);
+    return str;
 }
 
 void IntScan(void* current_int) {
