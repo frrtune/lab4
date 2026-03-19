@@ -161,13 +161,15 @@ DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*))
         show_errno();
         return NULL;
     }
+    size_t elem_size = arr->info->size;
     for (size_t i = 0; i < arr->size; i++) {
-        void* new_elem = function(arr->data[i]);
+        void* current_elem = (void*)((char*)arr->data + elem_size * i);
+        void* new_elem = function(current_elem);
         if (new_elem == NULL) {
             errno = ENOMEM;
             show_errno();
             array_destroy(new_arr);
-            return NULL;
+            return NULL;    
         }
         array_push_back(new_arr, new_elem);
     }
