@@ -188,9 +188,10 @@ DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*))
         show_errno();
         return NULL;
     }
+    size_t elem_size = arr->info->size;
     for (size_t i = 0; i < arr->size; i++) {
-        if (function(arr->data[i])) {
-            void* copied_elem = arr->info->clone(arr->data[i]);
+        if (function((const void*)((char*)arr->data + elem_size * i))) {
+            void* copied_elem = arr->info->clone((const void*)((char*)arr->data + elem_size * i));
             array_push_back(new_arr, copied_elem);
         }
     }
