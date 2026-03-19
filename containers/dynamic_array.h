@@ -5,7 +5,7 @@
 typedef struct {
     size_t size;
     size_t capacity;
-    void** data;
+    void* data;
     const FieldInfo* info;
 } DynamicArray;
 

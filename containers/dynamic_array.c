@@ -25,7 +25,7 @@ void show_errno(void)
         case 0:
             err_info = "no error";
     }
-    fputs(err_info, stdout);
+    fputs(err_info, stderr);
     puts(" occurred");
 }
 
@@ -41,7 +41,7 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
         show_errno();
         return NULL;
     }
-    arr->data = (void**)malloc(sizeof(void*) * capacity);
+    arr->data = malloc(info->size * capacity);
     if (arr->data == NULL) {
         free(arr);
         errno = ENOMEM;
@@ -66,12 +66,12 @@ void array_remove_by_index(DynamicArray* arr, size_t index) {
         show_errno();
         return;
     }
-    arr->info->destroy(arr->data[index]);
-    for (size_t i = index; i < (arr->size - 1); i++)
-    {
-        arr->data[i] = arr->data[i + 1];
+    size_t elem_size = arr->info->size;
+    void* elem = (char*)arr->data + (elem_size * index);
+    arr->info->destroy(elem);
+    for (size_t i = index; i < (arr->size - 1); i++) {
+        *((char*)arr->data + (elem_size * i)) = *((char*)arr->data + (elem_size * (i + 1)));
     }
-    arr->data[arr->size-1] = NULL;
     arr->size--;
 }
 
