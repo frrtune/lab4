@@ -117,8 +117,9 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
         show_errno();
         return;
     }
+    size_t elem_size = arr->info->size;
     if (arr->size == arr->capacity) {
-        void** new_data = realloc(arr->data, 2 * arr->capacity * sizeof(void*));
+        void* new_data = realloc(arr->data, 2 * arr->capacity * elem_size);
         if (new_data == NULL) {
             errno = ENOMEM;
             show_errno();
@@ -128,9 +129,13 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
         arr->capacity = 2 * arr->capacity;
     }
     for (size_t i = arr->size; i > index; i--) {
-        arr->data[i] = arr->data[i-1];
+        for (size_t j = 0; j < elem_size; j++) {
+            *((char*)arr->data + elem_size * i + j) = *((char*)arr->data + elem_size * (i - 1) + j);
+        }
     }
-    arr->data[index] = elem;
+    for (size_t i = 0; i < elem_size; i++) {
+        *((char*)arr->data + elem_size * index + i) = *((char*)elem + i);
+    }
     arr->size++;
 }
 
