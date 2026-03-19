@@ -1,5 +1,6 @@
 #include <pdcurses.h>
 #include <stdlib.h>
+#include "ui.h"
 #include "../containers/dynamic_array.h"
 #include "../data_types/integer.h"
 #include "../data_types/complex.h"
@@ -8,6 +9,7 @@ void integer_menu() {
     DynamicArray* arr = array_initialize(5, GetIntFieldInfo());
     int in_progress = 1;
     int value;
+    char buff[15];
     while (in_progress) {
         clear();
         printw("INTEGER NUMBERS\n");
@@ -17,7 +19,8 @@ void integer_menu() {
         } else {
             printw("[");
             for (size_t i = 0; i < arr->size; i++) {
-                printw("%d", *(int*)arr->data[i]);
+                int* current = (int*)((char*)arr->data + (arr->info->size * i));
+                printw("%d", *current);
                 if (i < arr->size - 1) printw(", ");
             }
             printw("]");
@@ -27,14 +30,23 @@ void integer_menu() {
         printw("3. Back\n");
         printw("Choose:\n");
         refresh();
-        switch(getch()) {
+        int ch = getch();
+        switch(ch) {
             case '1':
+                echo();
+                curs_set(1);
                 printw("\nEnter number: ");
                 refresh();
-                scanw("%d", &value);
+                scanw("%s", buff);
+                noecho();
+                curs_set(0);
+                char* endptr;
+                errno = 0;
+                long value = strtol(buff, &endptr, 10); 
                 int* new_elem = malloc(sizeof(int));
                 *new_elem = value;
                 array_push_back(arr, new_elem);
+                refresh();
                 getch();
                 break;
             case '2':
@@ -49,7 +61,7 @@ void integer_menu() {
     array_destroy(arr);
 }
 
-int main() {
+void open_ui() {
     initscr();
     noecho();
     int mode = 0;
@@ -78,5 +90,4 @@ int main() {
         }
     }
     endwin();
-    return 0;
 }
