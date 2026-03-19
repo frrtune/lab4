@@ -30,17 +30,17 @@ void ComplexDestroy(void* current_complex) {
     free(current_complex);
 }
 
-void ComplexPrint(const void* current_complex) {
-    if (!current_complex) {
-        puts("NULL");
-        return;
-    }
+char* ComplexPrint(const void* current_complex) {
+    if (!current_complex) return NULL;
+    char* str = malloc(50);
+    if (!str) return NULL;
     const Complex* current_complex_c = (const Complex*)current_complex;
     if (current_complex_c->Im < 0) {
-        printf("%lf-%lf*i", current_complex_c->Re, -current_complex_c->Im);
-        return;
+        sprintf(str, "%lf-%lf*i", current_complex_c->Re, -current_complex_c->Im);
+    } else {
+        sprintf(str, "%lf+%lf*i", current_complex_c->Re, current_complex_c->Im);
     }
-    printf("%lf+%lf*i", current_complex_c->Re, current_complex_c->Im);
+    return str;
 }
 
 void ComplexScan(void* current_complex) {

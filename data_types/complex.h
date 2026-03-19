@@ -9,5 +9,5 @@ typedef struct {
 const FieldInfo* GetComplexFieldInfo();
 void* ComplexClone(const void* current_complex);
 void ComplexDestroy(void* current_complex);
-void ComplexPrint(const void* current_complex);
+char* ComplexPrint(const void* current_complex);
 void ComplexScan(void* current_complex);
