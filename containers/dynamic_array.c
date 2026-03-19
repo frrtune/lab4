@@ -94,8 +94,9 @@ void array_push_back(DynamicArray* arr, void* elem) {
         show_errno();
         return;
     }
+    size_t elem_size = arr->info->size;
     if (arr->size == arr->capacity) {
-        void** new_data = realloc(arr->data, 2 * arr->capacity * sizeof(void*));
+        void* new_data = realloc(arr->data, 2 * arr->capacity * elem_size);
         if (new_data == NULL) {
             errno = ENOMEM;
             show_errno();
@@ -104,7 +105,9 @@ void array_push_back(DynamicArray* arr, void* elem) {
         arr->data = new_data;
         arr->capacity = 2 * arr->capacity;
     }       
-    arr->data[arr->size] = elem;
+    for (size_t i = 0; i < elem_size; i++) {
+        *((char*)arr->data + (elem_size * arr->size) + i) = *((char*)elem + i);
+    }
     arr->size++;
 }
 
