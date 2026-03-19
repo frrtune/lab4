@@ -145,7 +145,8 @@ const void* array_get(const DynamicArray* arr, size_t index) {
         show_errno();
         return NULL;
     }
-    return arr->data[index];
+    size_t elem_size = arr->info->size;
+    return (char*)arr->data + elem_size * index;
 }
 
 DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*)) {
