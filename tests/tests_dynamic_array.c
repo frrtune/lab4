@@ -18,13 +18,14 @@ void test_array_initialize() {
 void test_array_push_back() {
     puts("2. Pushing back...");
     DynamicArray* arr = array_initialize(1, GetIntFieldInfo());
+    size_t elem_size = arr->info->size;
     int elem1 = 1, elem2 = 2, elem3 = 3;
     array_push_back(arr, &elem1);
-    assert(*(int*)arr->data[0] == 1);
+    assert(*(int*)arr->data == 1);
     assert(arr->size == 1);
     array_push_back(arr, &elem2);
-    assert(*(int*)arr->data[0] == 1);
-    assert(*(int*)arr->data[1] == 2);
+    assert(*(int*)arr->data == 1);
+    assert(*((int*)arr->data + elem_size) == 2);
     assert(arr->size == 2);
     assert(arr->capacity == 2);
     puts("SUCCESS");
@@ -33,6 +34,7 @@ void test_array_push_back() {
 void test_array_remove_by_index() {
     puts("3. Removing by index...");
     DynamicArray* arr = array_initialize(3, GetIntFieldInfo());
+    size_t elem_size = arr->info->size;
     int* elem1 = malloc(sizeof(int));
     int* elem2 = malloc(sizeof(int));
     int* elem3 = malloc(sizeof(int));
@@ -42,8 +44,8 @@ void test_array_remove_by_index() {
     array_push_back(arr, elem3);
     array_remove_by_index(arr, 1);
     assert(arr->size == 2);
-    assert(*(int*)arr->data[0] == 1);
-    assert(*(int*)arr->data[1] == 3);
+    assert(*(int*)arr->data == 1);
+    assert(*((int*)arr->data + elem_size) == 3);
     array_destroy(arr);
     puts("SUCCESS");
 }
@@ -51,6 +53,7 @@ void test_array_remove_by_index() {
 void test_array_insert() {
     puts("4. Inserting...");
     DynamicArray* arr = array_initialize(3, GetIntFieldInfo());
+    size_t elem_size = arr->info->size;
     int* elem1 = malloc(sizeof(int));
     int* elem2 = malloc(sizeof(int));
     int* elem3 = malloc(sizeof(int));
@@ -60,10 +63,10 @@ void test_array_insert() {
     array_push_back(arr, elem2);
     array_push_back(arr, elem3);
     array_insert(arr, elem4, 1);
-    assert(*(int*)arr->data[0] == 1);
-    assert(*(int*)arr->data[1] == 4);
-    assert(*(int*)arr->data[2] == 2);
-    assert(*(int*)arr->data[3] == 3);
+    assert(*(int*)arr->data == 1);
+    assert(*((int*)arr->data + elem_size) == 4);
+    assert(*((int*)arr->data + elem_size * 2) == 2);
+    assert(*((int*)arr->data + elem_size * 3) == 3);
     array_destroy(arr);
     puts("SUCCESS");
 }
@@ -120,6 +123,7 @@ void* double_int(const void* elem) {
 void test_map() {
     puts("7. Mapping...");
     DynamicArray* arr = array_initialize(4, GetIntFieldInfo());
+    size_t elem_size = arr->info->size;
     int* elem1 = malloc(sizeof(int));
     int* elem2 = malloc(sizeof(int));
     int* elem3 = malloc(sizeof(int));
@@ -131,10 +135,10 @@ void test_map() {
     array_push_back(arr, elem4);
     DynamicArray* mapped_array = array_map(arr, double_int);
     assert(mapped_array->size == 4);
-    assert(*(int*)mapped_array->data[0] == 2);
-    assert(*(int*)mapped_array->data[1] == 4);
-    assert(*(int*)mapped_array->data[2] == 6);
-    assert(*(int*)mapped_array->data[3] == 8);
+    assert(*((int*)arr->data) == 2);
+    assert(*((int*)arr->data + elem_size) == 4);
+    assert(*((int*)arr->data + elem_size * 2) == 6);
+    assert(*((int*)arr->data + elem_size * 3) == 8);
     array_destroy(arr);
     array_destroy(mapped_array);
     puts("SUCCESS");
@@ -147,6 +151,7 @@ int is_positive(const void* elem) {
 void test_array_where() {
     puts("8. Producing where...");
     DynamicArray* arr = array_initialize(4, GetIntFieldInfo());
+    size_t elem_size = arr->info->size;
     int* elem1 = malloc(sizeof(int));
     int* elem2 = malloc(sizeof(int));
     int* elem3 = malloc(sizeof(int));
@@ -159,8 +164,8 @@ void test_array_where() {
     DynamicArray* whered_array = array_where(arr, is_positive);
     assert(whered_array->size == 2);
     puts("size is ok");
-    assert(*(int*)whered_array->data[0] == 1);
-    assert(*(int*)whered_array->data[1] == 2);
+    assert(*(int*)arr->data == 1);
+    assert(*((int*)arr->data + elem_size) == 2);
     array_destroy(whered_array);
     array_destroy(arr);
     puts("SUCCESS");
@@ -170,6 +175,7 @@ void test_array_concatenate() {
     puts("9. Concatenating...");
     DynamicArray* arr1 = array_initialize(2, GetIntFieldInfo());
     DynamicArray* arr2 = array_initialize(1, GetIntFieldInfo());
+    size_t elem_size = arr1->info->size;
     int* elem1 = malloc(sizeof(int));
     int* elem2 = malloc(sizeof(int));
     int* elem3 = malloc(sizeof(int));
@@ -179,9 +185,9 @@ void test_array_concatenate() {
     array_push_back(arr2, elem3);
     DynamicArray* concatenated_array = array_concatenate(arr1, arr2);
     assert(concatenated_array->size == 3);
-    assert(*(int*)concatenated_array->data[0] == -1);
-    assert(*(int*)concatenated_array->data[1] == 0);
-    assert(*(int*)concatenated_array->data[2] == 1);
+    assert(*((int*)concatenated_array->data) == -1);
+    assert(*((int*)concatenated_array->data + elem_size) == 0);
+    assert(*((int*)concatenated_array->data + elem_size * 2) == 1);
     array_destroy(concatenated_array);
     array_destroy(arr1);
     array_destroy(arr2);
