@@ -1,6 +1,7 @@
 #include "dynamic_array.h"
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 void show_errno(void)
 {
@@ -30,7 +31,7 @@ void show_errno(void)
 }
 
 DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
-    if (!capacity || !info ) {
+    if (!info) {
         errno = EINVAL;
         show_errno();
         return NULL;
@@ -40,6 +41,13 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
         errno = ENOMEM;
         show_errno();
         return NULL;
+    }
+    if (!capacity) {
+        arr->data = NULL;
+        arr->size = 0;
+        arr->capacity = 0;
+        arr->info = info;
+        return arr;
     }
     arr->data = malloc(info->size * capacity);
     if (arr->data == NULL) {
@@ -198,6 +206,7 @@ DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*))
     return new_arr;
 }
 
+//переделать: копировать по одному элементу - очень странно и неэффективно
 DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2) {
     if (arr1 == NULL || arr2 == NULL || arr1->info != arr2->info) {
         errno = EINVAL;
