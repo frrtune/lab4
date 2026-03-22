@@ -43,9 +43,9 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
         return NULL;
     }
     if (!capacity) {
-        arr->data = NULL;
+        arr->data = malloc(1);
         arr->size = 0;
-        arr->capacity = 0;
+        arr->capacity = 1;
         arr->info = info;
         return arr;
     }
