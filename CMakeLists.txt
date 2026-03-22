@@ -5,12 +5,12 @@ set(CMAKE_BUILD_TYPE Debug)
 find_library(PDCURSES_LIB NAMES pdcurses libpdcurses PATHS "C:/msys64/mingw64/lib")
 find_path(PDCURSES_INCLUDE NAMES curses.h pdcurses.h PATHS "C:/msys64/mingw64/include" "C:/msys64/mingw64/include/pdcurses")
 
-add_subdirectory(containers)
 add_subdirectory(data_types)
+add_subdirectory(containers)
 add_subdirectory(ui)
 
 add_executable(lab4
-    ui.c  
+    main.c  
 )
 
 target_link_libraries(lab4
@@ -18,4 +18,12 @@ target_link_libraries(lab4
     data_types  
     ui
     ${PDCURSES_LIB}
+)
+
+target_include_directories(lab4 PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/containers
+    ${CMAKE_SOURCE_DIR}/data_types
+    ${CMAKE_SOURCE_DIR}/ui
+    ${PDCURSES_INCLUDE}
 )
