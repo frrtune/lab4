@@ -215,18 +215,11 @@ DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2) {
     }
     DynamicArray* new_arr = array_initialize(arr1->size + arr2->size, arr1->info);
     if (new_arr == NULL) {
-        errno = ENOMEM;
-        show_errno();
         return NULL;
     }
     size_t elem_size = arr1->info->size;
-    for (size_t i = 0; i < arr1->size; i++) {
-        void* copied_elem = arr1->info->clone((const void*)((char*)arr1->data + elem_size * i));
-        array_push_back(new_arr, copied_elem);
-    }
-    for (size_t i = 0; i < arr2->size; i++) {
-        void* copied_elem = arr2->info->clone((const void*)((char*)arr2->data + elem_size * i));
-        array_push_back(new_arr, copied_elem);
-    }
+    memcpy(new_arr->data, arr1->data, arr1->size * elem_size);
+    memcpy((char*)new_arr->data + arr1->size * elem_size, arr2->data, arr2->size * elem_size);
+    new_arr->size = arr1->size + arr2->size;
     return new_arr;
 }
