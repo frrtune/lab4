@@ -3,43 +3,43 @@
 #include <stdio.h>
 #include <string.h>
 
-void show_errno(void)
-{
-    const char *err_info = "unknown error";
-    switch (errno)
-    {
-        case EDOM:
-            err_info = "domain error";
-            break;
-        case EILSEQ:
-            err_info = "illegal sequence";
-            break;
-        case ERANGE:
-            err_info = "pole or range error";
-            break;
-        case EINVAL:
-            err_info = "invalid argument";
-            break;
-        case ENOMEM:
-            err_info = "memory error";
-            break;
-        case 0:
-            err_info = "no error";
+typedef struct {
+    int code;
+    const char* message;
+} ErrorInfo;
+
+const ErrorInfo errors[] = {
+    {EINVAL, "invalid argument"},
+    {ENOMEM, "memory error"},
+};
+
+const int errors_size = sizeof(errors) / sizeof(errors[0]);
+
+ErrorInfo get_error_info(int err) {
+    for (int i = 0; i < errors_size; i++) {
+        if (errors[i].code == err) {
+            return errors[i];
+        }
     }
-    fputs(err_info, stderr);
-    puts(" occurred");
+    return (ErrorInfo){err, "unknown error"};
+}
+
+void show_error(const ErrorInfo* info) {
+    fputs(info->message, stderr);
 }
 
 DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
     if (!info) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     DynamicArray* arr = (DynamicArray*)malloc(sizeof(DynamicArray));
     if (arr == NULL) {
         errno = ENOMEM;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     if (!capacity) {
@@ -53,7 +53,8 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
     if (arr->data == NULL) {
         free(arr);
         errno = ENOMEM;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     arr->size = 0;
@@ -64,14 +65,16 @@ DynamicArray* array_initialize(size_t capacity, const FieldInfo* info) {
 
 void array_remove_by_index(DynamicArray* arr, size_t index) {
     if (arr == NULL) {
-        errno = ENOMEM;
-        show_errno();
+        errno = EINVAL;
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return;
     }
     if (index >= arr->size)
     {
         errno = ERANGE;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return;
     }
     size_t elem_size = arr->info->size;
@@ -85,8 +88,9 @@ void array_remove_by_index(DynamicArray* arr, size_t index) {
 
 void array_destroy(DynamicArray* arr) {
     if (arr == NULL) {
-        errno = ENOMEM;
-        show_errno();
+        errno = EINVAL;
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return;
     }
     while (arr->size > 0) {
@@ -99,7 +103,8 @@ void array_destroy(DynamicArray* arr) {
 void array_push_back(DynamicArray* arr, void* elem) {
     if (arr == NULL || elem == NULL) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return;
     }
     size_t elem_size = arr->info->size;
@@ -107,7 +112,8 @@ void array_push_back(DynamicArray* arr, void* elem) {
         void* new_data = realloc(arr->data, 2 * arr->capacity * elem_size);
         if (new_data == NULL) {
             errno = ENOMEM;
-            show_errno();
+            ErrorInfo err_info = get_error_info(errno);
+            show_error(&err_info);
             return;
         }
         arr->data = new_data;
@@ -122,7 +128,8 @@ void array_push_back(DynamicArray* arr, void* elem) {
 void array_insert(DynamicArray* arr, void* elem, size_t index) {
     if (arr == NULL || elem == NULL || index > arr->size) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return;
     }
     size_t elem_size = arr->info->size;
@@ -130,7 +137,8 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
         void* new_data = realloc(arr->data, 2 * arr->capacity * elem_size);
         if (new_data == NULL) {
             errno = ENOMEM;
-            show_errno();
+            ErrorInfo err_info = get_error_info(errno);
+            show_error(&err_info);
             return;
         }
         arr->data = new_data;
@@ -150,7 +158,8 @@ void array_insert(DynamicArray* arr, void* elem, size_t index) {
 const void* array_get(const DynamicArray* arr, size_t index) {
     if (arr == NULL || index >= arr->size) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     size_t elem_size = arr->info->size;
@@ -160,13 +169,15 @@ const void* array_get(const DynamicArray* arr, size_t index) {
 DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*)) {
     if (arr == NULL || function == NULL) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     DynamicArray* new_arr = array_initialize(arr->size, arr->info);
     if (new_arr == NULL) {
         errno = ENOMEM;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     size_t elem_size = arr->info->size;
@@ -175,7 +186,8 @@ DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*))
         void* new_elem = function(current_elem);
         if (new_elem == NULL) {
             errno = ENOMEM;
-            show_errno();
+            ErrorInfo err_info = get_error_info(errno);
+            show_error(&err_info);
             array_destroy(new_arr);
             return NULL;    
         }
@@ -187,13 +199,15 @@ DynamicArray* array_map(const DynamicArray* arr, void* (*function)(const void*))
 DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*)) {
     if (arr == NULL || function == NULL) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     DynamicArray* new_arr = array_initialize(arr->size, arr->info);
     if (new_arr == NULL) {
         errno = ENOMEM;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     size_t elem_size = arr->info->size;
@@ -210,7 +224,8 @@ DynamicArray* array_where(const DynamicArray* arr, int (*function)(const void*))
 DynamicArray* array_concatenate(DynamicArray* arr1, DynamicArray* arr2) {
     if (arr1 == NULL || arr2 == NULL || arr1->info != arr2->info) {
         errno = EINVAL;
-        show_errno();
+        ErrorInfo err_info = get_error_info(errno);
+        show_error(&err_info);
         return NULL;
     }
     DynamicArray* new_arr = array_initialize(arr1->size + arr2->size, arr1->info);
